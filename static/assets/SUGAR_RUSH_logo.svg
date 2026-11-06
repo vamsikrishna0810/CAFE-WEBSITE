@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">SUGAR_RUSH cherry candy mark</title>
+  <desc id="desc">A playful pink-and-red wrapped candy with cherry-shaped loops and a golden sparkle.</desc>
+  <circle cx="120" cy="120" r="112" fill="#fff0e8"/>
+  <path d="M80 117c-3-30 6-52 21-63 12-9 23-3 25 9 2-12 14-17 25-7 15 13 20 36 8 62" fill="none" stroke="#6c3441" stroke-width="8" stroke-linecap="round"/>
+  <path d="M127 64c8-16 23-23 39-20" fill="none" stroke="#71805e" stroke-width="7" stroke-linecap="round"/>
+  <path d="M70 103 42 79l8 40-23 21 40 5m103-42 29-24-8 40 24 21-40 5" fill="#f05b78" stroke="#291c20" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M58 119c14-18 28-27 47-27h31c20 0 34 11 46 29l-13 36c-7 19-23 30-43 30h-13c-22 0-38-12-45-32z" fill="#f05b78" stroke="#291c20" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M85 119c10-11 23-16 39-16 17 0 28 5 39 16-10 10-22 15-39 15-16 0-29-5-39-15z" fill="#fff8ef"/>
+  <path d="M82 151c12 11 26 16 42 16 17 0 30-5 42-16" fill="none" stroke="#fff8ef" stroke-width="7" stroke-linecap="round"/>
+  <path d="m177 62 5 11 12 2-9 8 2 12-10-6-10 6 3-12-9-8 12-2z" fill="#ffd568" stroke="#291c20" stroke-width="3" stroke-linejoin="round"/>
+</svg>
