@@ -18,6 +18,8 @@ Set-Location backend
 
 The `--demo` setup prints a randomly generated temporary password once. Use it only for this local prototype. To set a private password instead, run `python -m app.setup_admin` without `--demo` and follow the hidden prompts. The password is stored as a salted PBKDF2 hash in the ignored `backend/.env` file.
 
+For the current workspace's demo credential and the short two-terminal startup guide, see [`../docs/LOCAL_SERVER_GUIDE.md`](../docs/LOCAL_SERVER_GUIDE.md).
+
 Start the frontend in a second terminal from the project root:
 
 ```powershell

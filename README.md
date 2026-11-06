@@ -21,6 +21,8 @@ Open the local address printed by Vite, usually `http://localhost:5173`.
 
 For the password-protected admin and local SQLite API, follow [`backend/README.md`](backend/README.md). The current workspace uses Python 3.13.17. Open `/admin` on the Vite site after starting both services.
 
+For the quick start commands and this workspace's temporary admin password, see the [local server guide](docs/LOCAL_SERVER_GUIDE.md).
+
 To create a production bundle:
 
 ```powershell
