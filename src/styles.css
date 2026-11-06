@@ -125,6 +125,16 @@ p { color: var(--muted); }
 .visit h3 { font-family: "DM Sans", sans-serif; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
 .visit p { font-size: 11px; line-height: 1.8; }
 .placeholder { display: inline-block; padding: 4px 7px; border: 1px dashed #c69d8e; background: #fffaf5; color: #795c54; font-size: 9px; }
+.booking-section { max-width: 920px; margin: 0 auto; padding: 0 0 72px; }
+.booking-panel { padding: clamp(26px, 5vw, 56px); border: 1px solid var(--line); background: var(--paper); text-align: center; }
+.booking-status { display: inline-block; padding: 7px 10px; background: #fff0cb; color: #76552c; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.booking-panel h2 { margin: 17px 0 10px; font-size: clamp(32px, 5vw, 49px); line-height: 1.08; }
+.booking-panel p, .booking-note { max-width: 590px; margin: 0 auto; font-size: 12px; line-height: 1.8; }
+.booking-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+.dark-button { border-color: var(--ink); background: var(--ink) !important; color: white !important; }
+.dark-outline-button { border-color: var(--ink); color: var(--ink); }
+.dark-outline-button:hover { border-color: var(--gold); color: var(--ink); }
+.booking-note { margin-top: 18px; text-align: center; }
 .footer { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 20px; padding: 20px 0 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; }
 .footer h4 { margin: 0 0 10px; color: var(--ink); font-family: "DM Sans", sans-serif; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 .footer a { display: block; margin: 7px 0; color: var(--muted); text-decoration: none; }

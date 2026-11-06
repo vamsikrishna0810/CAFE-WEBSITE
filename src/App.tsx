@@ -67,7 +67,7 @@ function Header() {
               {label}
             </NavLink>
           ))}
-          <NavLink className="nav-cta" to="/menu">VIEW MENU</NavLink>
+          <NavLink className="nav-cta" to="/book">RESERVATION INFO</NavLink>
         </nav>
       </header>
     </>
@@ -160,7 +160,7 @@ function HomePage() {
         kicker="Cafe · bakery · sweet little things"
         title={<>Welcome to<br />SUGAR_RUSH.</>}
         description="A little neighborhood joy, served with coffee, cake and room for one more."
-        actions={<><Link className="button fill" to="/menu">View the menu</Link><Link className="button" to="/visit">Plan a visit</Link></>}
+        actions={<><Link className="button fill" to="/menu">View the menu</Link><Link className="button" to="/book">Reservation info</Link></>}
         alt="Sunlit cafe table with strawberry cake, coffee and flowers"
       />
       <Ticker />
@@ -263,6 +263,21 @@ function VisitPage() {
   </>;
 }
 
+function BookingInfoPage() {
+  return <>
+    <PageHero kicker="Plan a little time away" title="Reservation information" description="We want every visit to feel easy. Online reservations are not set up yet, so this page won't take or confirm a booking." image="sugar-rush-cafe.jpg" alt="Warm cafe interior with tables and a pastry counter" />
+    <section className="booking-section">
+      <div className="booking-panel" role="status" aria-live="polite">
+        <span className="booking-status">Online reservations unavailable</span>
+        <h2>We're not taking bookings online yet.</h2>
+        <p>No reservation has been sent or confirmed. Verified contact details and booking policies will be added here when the cafe is ready to accept requests.</p>
+        <div className="booking-actions"><Link className="button fill dark-button" to="/visit">Visit information</Link><Link className="button dark-outline-button" to="/menu">Browse the sample menu</Link></div>
+      </div>
+      <p className="booking-note">Hours, location, party-size limits, and reservation availability are not yet verified for this concept site.</p>
+    </section>
+  </>;
+}
+
 function App() {
   return <Routes><Route element={<Layout />}>
     <Route index element={<HomePage />} />
@@ -272,6 +287,7 @@ function App() {
     <Route path="shop" element={<ShopPage />} />
     <Route path="events" element={<EventsPage />} />
     <Route path="visit" element={<VisitPage />} />
+    <Route path="book" element={<BookingInfoPage />} />
     <Route path="*" element={<Navigate to="/" replace />} />
   </Route></Routes>;
 }
