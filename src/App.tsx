@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import {
   Link,
   NavLink,
@@ -8,8 +8,12 @@ import {
   Routes,
   useLocation,
 } from "react-router";
+import AdminPage from "./admin/AdminPage";
+import { getPublicEvents, getPublicMenu, getPublicSite, type CafeEvent, type CafeSettings, type MenuItem, type PublicMenu } from "./api";
 
 const asset = (name: string) => `/assets/${name}`;
+const CafeSettingsContext = createContext<CafeSettings | null>(null);
+const useCafeSettings = () => useContext(CafeSettingsContext);
 
 const menuItems = [
   { category: "Bakes & cake", name: "Strawberry shortcake", detail: "Soft sponge, berries & a cloud of cream" },
@@ -40,16 +44,17 @@ const navigation = [
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const settings = useCafeSettings();
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
 
   return (
     <>
-      <div className="announce">Cafe <span>•</span> Bakery <span>•</span> Sweet little things</div>
+      <div className="announce">{settings?.announcement_text || "Cafe · Bakery · Sweet little things"}</div>
       <header className="topbar">
-        <Link className="brand" to="/" aria-label="SUGAR_RUSH home">
+        <Link className="brand" to="/" aria-label={`${settings?.display_name || "SUGAR_RUSH"} home`}>
           <img src={asset("SUGAR_RUSH_logo.svg")} alt="" />
-          <span>SUGAR_RUSH</span>
+          <span>{settings?.display_name || "SUGAR_RUSH"}</span>
         </Link>
         <button
           className="mobile-menu-toggle"
@@ -75,12 +80,13 @@ function Header() {
 }
 
 function Footer() {
+  const settings = useCafeSettings();
   return (
     <footer className="footer">
-      <div><Link to="/" className="footer-brand">SUGAR_RUSH</Link><p>A little joy, by the slice.</p></div>
+      <div><Link to="/" className="footer-brand">{settings?.display_name || "SUGAR_RUSH"}</Link><p>{settings?.tagline || "A little joy, by the slice."}</p></div>
       <div><h4>Explore</h4><Link to="/about">About</Link><Link to="/cafe">Cafe</Link><Link to="/menu">Menu</Link></div>
       <div><h4>More to love</h4><Link to="/shop">Shop</Link><Link to="/events">Events</Link></div>
-      <div><h4>Come say hello</h4><Link to="/visit">Visit us</Link><span className="placeholder">Contact details to come</span></div>
+      <div><h4>Come say hello</h4><Link to="/visit">Visit us</Link>{settings?.phone ? <a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`}>{settings.phone}</a> : <span className="placeholder">Contact details to come</span>}{settings?.instagram_url && safeWebUrl(settings.instagram_url) && <a href={safeWebUrl(settings.instagram_url) || undefined} target="_blank" rel="noreferrer">Instagram</a>}{settings?.facebook_url && safeWebUrl(settings.facebook_url) && <a href={safeWebUrl(settings.facebook_url) || undefined} target="_blank" rel="noreferrer">Facebook</a>}</div>
     </footer>
   );
 }
@@ -154,12 +160,13 @@ function Ticker() {
 }
 
 function HomePage() {
+  const settings = useCafeSettings();
   return (
     <>
       <Hero
         kicker="Cafe · bakery · sweet little things"
-        title={<>Welcome to<br />SUGAR_RUSH.</>}
-        description="A little neighborhood joy, served with coffee, cake and room for one more."
+        title={<>Welcome to<br />{settings?.display_name || "SUGAR_RUSH"}.</>}
+        description={settings?.tagline || "A little neighborhood joy, served with coffee, cake and room for one more."}
         actions={<><Link className="button fill" to="/menu">View the menu</Link><Link className="button" to="/book">Reservation info</Link></>}
         alt="Sunlit cafe table with strawberry cake, coffee and flowers"
       />
@@ -167,8 +174,8 @@ function HomePage() {
       <section className="intro">
         <div className="eyebrow">Welcome</div>
         <h2>A happy little hideaway<br />for everyday celebrations.</h2>
-        <p>SUGAR_RUSH is a cafe concept for the first coffee, the birthday slice, and the catch-up that turns into the whole afternoon. Pull up a chair, find a favorite, and make a little day of it.</p>
-        <span className="demo">Brand story · customize before launch</span>
+        <p>{settings?.about_text || "SUGAR_RUSH is a cafe concept for the first coffee, the birthday slice, and the catch-up that turns into the whole afternoon. Pull up a chair, find a favorite, and make a little day of it."}</p>
+        <span className="demo">{settings?.is_demo_data === false ? "Cafe story" : "Demo story · customize before launch"}</span>
       </section>
 
       <section className="section" id="cafe">
@@ -210,9 +217,10 @@ function FeatureTile({ image, alt, title, text }: { image: string; alt: string; 
 }
 
 function AboutPage() {
+  const settings = useCafeSettings();
   return <>
-    <PageHero kicker="A neighborhood cafe" title="About SUGAR_RUSH" description="A little joy, by the slice. Here's the story behind the cafe and the small moments that make it feel like home." image="sugar-rush-hero.jpg" alt="Cake and coffee in a sunlit cafe" />
-    <section className="intro"><div className="eyebrow">Our story</div><h2>Life's too short<br />to skip the good bit.</h2><p>SUGAR_RUSH is a cheerful cafe concept built around a simple idea: make ordinary days a little sweeter. Pull up a chair for cake, coffee, and good company.</p><span className="demo">Draft story · replace with owner-approved details</span></section>
+    <PageHero kicker="A neighborhood cafe" title={`About ${settings?.display_name || "SUGAR_RUSH"}`} description={settings?.tagline || "A little joy, by the slice. Here's the story behind the cafe and the small moments that make it feel like home."} image="sugar-rush-hero.jpg" alt="Cake and coffee in a sunlit cafe" />
+    <section className="intro"><div className="eyebrow">Our story</div><h2>Life's too short<br />to skip the good bit.</h2><p>{settings?.about_text || "SUGAR_RUSH is a cheerful cafe concept built around a simple idea: make ordinary days a little sweeter. Pull up a chair for cake, coffee, and good company."}</p><span className="demo">{settings?.is_demo_data === false ? "Cafe story" : "Draft story · replace with owner-approved details"}</span></section>
     <section className="banner"><div className="eyebrow">Events & specials</div><h2>Little reasons to come back.</h2><p>Seasonal specials, cafe happenings and community updates will be shared here once confirmed.</p><span className="demo">Details to come</span></section>
   </>;
 }
@@ -228,16 +236,23 @@ function CafePage() {
 function MenuPage() {
   const [category, setCategory] = useState("Everything");
   const [query, setQuery] = useState("");
-  const categories = ["Everything", "Bakes & cake", "Coffee & sips", "Little bites"];
-  const shown = menuItems.filter((item) => (category === "Everything" || item.category === category) && `${item.name} ${item.detail}`.toLowerCase().includes(query.toLowerCase().trim()));
+  const [publicMenu, setPublicMenu] = useState<PublicMenu | null>(null);
+  const [apiUnavailable, setApiUnavailable] = useState(false);
+  useEffect(() => {
+    getPublicMenu().then((value) => setPublicMenu(value)).catch(() => setApiUnavailable(true));
+  }, []);
+  const source: Array<MenuItem | (typeof menuItems)[number]> = publicMenu?.items ?? menuItems;
+  const categories = ["Everything", ...new Set(source.map((item) => item.category))];
+  const shown = source.filter((item) => (category === "Everything" || item.category === category) && `${item.name} ${"description" in item ? item.description : item.detail}`.toLowerCase().includes(query.toLowerCase().trim()));
 
   return <>
     <PageHero kicker="Good things, made to be savored" title="The Menu" description="A little something for every mood. Browse the sample menu; final dishes, dietary notes, and prices are still to be confirmed." image="sugar-rush-cake.jpg" alt="Cherry chocolate cake" />
     <section className="section menu-section">
-      <div className="section-head"><div><div className="eyebrow">Find your favorite</div><h2>Something for every mood.</h2></div><span className="demo">Sample menu · demo</span></div>
+      <div className="section-head"><div><div className="eyebrow">Find your favorite</div><h2>Something for every mood.</h2></div><span className="demo">{publicMenu ? (publicMenu.is_demo_data ? "Menu · demo data" : "Menu · owner data") : "Sample menu · preview"}</span></div>
       <label className="search-field"><span>Search the menu</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try cake or latte" /></label>
       <div className="filter-list" role="group" aria-label="Filter menu by category">{categories.map((item) => <button key={item} type="button" className={`filter-button ${category === item ? "selected" : ""}`} onClick={() => setCategory(item)}>{item}</button>)}</div>
-      <div className="menu-list">{shown.length ? shown.map((item) => <article className="menu-row" key={item.name}><div><b>{item.name}</b><small>{item.detail}</small></div><strong>Price to come</strong></article>) : <p className="empty-menu">No treats match that search. Try another name.</p>}</div>
+      {apiUnavailable && <p className="menu-api-note">Showing a local preview menu. The cafe API is not connected.</p>}
+      <div className="menu-list">{shown.length ? shown.map((item) => <article className="menu-row" key={item.name}><div><b>{item.name}</b><small>{"description" in item ? item.description : item.detail}</small></div><strong>{"price_minor" in item ? formatMoney(item.price_minor, publicMenu?.currency_code ?? "INR") : "Price to come"}</strong></article>) : <p className="empty-menu">{publicMenu ? "No menu items are published yet. Please check back later." : "No treats match that search. Try another name."}</p>}</div>
     </section>
   </>;
 }
@@ -250,16 +265,23 @@ function ShopPage() {
 }
 
 function EventsPage() {
+  const [events, setEvents] = useState<CafeEvent[]>([]);
+  const [apiReady, setApiReady] = useState(false);
+  useEffect(() => {
+    getPublicEvents().then((value) => { setEvents(value); setApiReady(true); }).catch(() => setApiReady(false));
+  }, []);
   return <>
     <PageHero kicker="Make it a moment" title="Events & Specials" description="Little gatherings, seasonal treats and good reasons to meet up. Check back for SUGAR_RUSH event updates." image="sugar-rush-coffee.jpg" alt="Coffee in a cozy cafe" />
-    <section className="intro"><div className="eyebrow">Coming up</div><h2>We'll save you a seat.</h2><p>There aren't any confirmed events to list yet. Once the calendar is ready, dates and details will live here.</p><span className="demo">No events published</span></section>
+    <section className="section public-events"><div className="section-head"><div><div className="eyebrow">Coming up</div><h2>We'll save you a seat.</h2></div><span className="demo">{apiReady ? "Cafe calendar" : "Preview calendar"}</span></div>{events.length ? <div className="cards">{events.map((event) => <article className="public-event-card" key={event.id}><span className="eyebrow">{event.starts_at || "Date to come"}</span><h3>{event.title}</h3><p>{event.description}</p>{event.is_demo_data && <span className="demo">Demo event · confirm details</span>}</article>)}</div> : <p className="empty-menu">{apiReady ? "There are no published events yet." : "There are no confirmed events to list yet. Once the calendar is ready, dates and details will live here."}</p>}</section>
   </>;
 }
 
 function VisitPage() {
+  const settings = useCafeSettings();
+  const hours = settings?.opening_hours ?? [];
   return <>
-    <PageHero kicker="We'd love to see you" title="Visit SUGAR_RUSH" description="Planning a coffee run or a slice of cake? Add the verified location and hours here before opening the page to customers." image="sugar-rush-courtyard.jpg" alt="Sunny cafe courtyard" />
-    <section className="visit"><div><div className="eyebrow">Come on over</div><h2>Find our door.</h2><p>Visit information will be added when the cafe details are confirmed.</p></div><div><h3>Location & contact</h3><p><span className="placeholder">Add verified cafe address</span></p><p><span className="placeholder">Add phone / contact details</span></p></div><div><h3>When we're open</h3><p><span className="placeholder">Add verified opening hours</span></p><p>Table requests are unavailable in this preview.</p></div></section>
+    <PageHero kicker="We'd love to see you" title={`Visit ${settings?.display_name || "SUGAR_RUSH"}`} description="Planning a coffee run or a slice of cake? Find the cafe's current address and hours below." image="sugar-rush-courtyard.jpg" alt="Sunny cafe courtyard" />
+    <section className="visit"><div><div className="eyebrow">Come on over</div><h2>Find our door.</h2><p>{settings?.is_demo_data ? <span className="placeholder">Demo details · verify before publishing</span> : "We look forward to seeing you."}</p></div><div><h3>Location & contact</h3><p>{settings?.address || <span className="placeholder">Add verified cafe address</span>}</p>{settings?.phone ? <p><a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`}>{settings.phone}</a></p> : <p><span className="placeholder">Add phone / contact details</span></p>}{settings?.email && <p><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}{settings?.map_url && safeWebUrl(settings.map_url) && <p><a href={safeWebUrl(settings.map_url) || undefined} target="_blank" rel="noreferrer">Open map</a></p>}</div><div><h3>When we're open</h3>{settings?.is_demo_data || !settings ? <p><span className="placeholder">Add verified opening hours</span></p> : hours.map((hour) => <p className="visit-hour" key={hour.day}><b>{hour.day}</b><span>{hour.is_closed ? "Closed" : `${hour.opens_at} – ${hour.closes_at}`}</span></p>)}<p>Table requests are unavailable in this preview.</p></div></section>
   </>;
 }
 
@@ -279,17 +301,44 @@ function BookingInfoPage() {
 }
 
 function App() {
-  return <Routes><Route element={<Layout />}>
-    <Route index element={<HomePage />} />
-    <Route path="about" element={<AboutPage />} />
-    <Route path="cafe" element={<CafePage />} />
-    <Route path="menu" element={<MenuPage />} />
-    <Route path="shop" element={<ShopPage />} />
-    <Route path="events" element={<EventsPage />} />
-    <Route path="visit" element={<VisitPage />} />
-    <Route path="book" element={<BookingInfoPage />} />
-    <Route path="*" element={<Navigate to="/" replace />} />
-  </Route></Routes>;
+  const [publicSettings, setPublicSettings] = useState<CafeSettings | null>(null);
+  useEffect(() => {
+    getPublicSite().then(setPublicSettings).catch(() => setPublicSettings(null));
+  }, []);
+  return <CafeSettingsContext.Provider value={publicSettings}>
+    <Routes>
+      <Route path="/admin" element={<AdminPage />} />
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="cafe" element={<CafePage />} />
+        <Route path="menu" element={<MenuPage />} />
+        <Route path="shop" element={<ShopPage />} />
+        <Route path="events" element={<EventsPage />} />
+        <Route path="visit" element={<VisitPage />} />
+        <Route path="book" element={<BookingInfoPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  </CafeSettingsContext.Provider>;
 }
 
 export default App;
+
+function safeWebUrl(value: string) {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function formatMoney(minor: number, currency: string) {
+  try {
+    const fractionDigits = new Intl.NumberFormat("en", { style: "currency", currency }).resolvedOptions().maximumFractionDigits;
+    return new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(minor / (10 ** fractionDigits));
+  } catch {
+    return `${currency} ${(minor / 100).toFixed(2)}`;
+  }
+}

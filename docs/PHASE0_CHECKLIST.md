@@ -3,9 +3,9 @@
 ## Repository snapshot
 
 - Current app: React 19, TypeScript strict mode, Vite 8 public-site preview.
-- Existing routes: Home, About, Cafe, Menu, Shop, Events, Visit.
-- Menu search/filtering uses an in-browser sample array; there is no API or database.
-- No backend, migrations, typed API client, auth, `.env.example`, or root agent instructions existed at the start of this checklist.
+- Existing routes: Home, About, Cafe, Menu, Shop, Events, Visit, reservation information, and local admin.
+- The public menu/profile/events use the local API when connected and retain labelled preview content where appropriate.
+- The `dev` branch now has a local FastAPI/SQLite service, initial Alembic migration, password-protected admin API, and typed frontend API client.
 - The kit's source-of-truth documents are in `cafe_ai_agent_kit/`.
 
 ## Decisions and proposed architecture
@@ -25,11 +25,11 @@
 - [x] Add safe environment-variable examples and ignore local secrets/cache files.
 - [x] Record owner decisions needed before real customer-facing operation.
 - [x] Record Phase 0 assessment and initial architecture decisions.
-- [ ] Confirm Node/Python versions available in the development environment and choose compatible backend dependency versions.
-- [ ] Scaffold the FastAPI service with a health endpoint and environment validation.
-- [ ] Add initial SQLAlchemy entities and Alembic baseline migration.
-- [ ] Publish the initial OpenAPI contract and add a typed frontend API client.
-- [ ] Document local setup for both apps and clean-database initialization.
+- [x] Confirm Node 26.13.0 and Python 3.13.17; choose dependency ranges compatible with Python 3.13.
+- [x] Scaffold the FastAPI service with health, public content, authenticated admin endpoints, and local-origin CORS.
+- [x] Add SQLAlchemy entities and an Alembic baseline migration for menu, cafe settings/hours, and events.
+- [x] Expose generated OpenAPI at the local FastAPI `/docs` route and add a typed frontend API client.
+- [x] Document local setup and clean-database initialization in `backend/README.md`.
 - [ ] Complete the Phase 0 acceptance gate before starting Phase 1 integrations.
 
 ## Reference notes for Phase 1
@@ -41,3 +41,10 @@ Use the Oak Hill reference for broad structure only: group menus clearly, make t
 - Added a prominent reservation-information link from the homepage and navigation, following the reference's clear booking action.
 - Added `/book` as an explicit unavailable-state page. It states that no request is accepted or confirmed, and links visitors to the current visit information or sample menu.
 - Real hours, venue details, and reservation rules remain blocked on owner decisions and a reachable backend; this page does not use Oak Hill's details.
+
+## Local admin slice on `dev`
+
+- Added `/admin` with password login, overview, menu editing/prices/availability, cafe profile/contact/story/announcement/social links/hours, event drafts, and a disabled reservations section.
+- Added SQLite seed data. Sample foods and prices are demo data and initially unavailable.
+- The public menu, visit profile/hours, and events read saved data when the local API is running; otherwise the public menu remains a labelled preview.
+- The phase is not production-ready until deployment security, backups, and acceptance checks are complete and verified cafe information is supplied.
